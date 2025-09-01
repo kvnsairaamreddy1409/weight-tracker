@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { Scale, Target, Droplets, TrendingDown, Calendar, Plus, Minus, BarChart3, Settings, PlusCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Scale, Target, Droplets, TrendingDown, Calendar, BarChart3, Settings, PlusCircle } from 'lucide-react';
 
 const WeightLossTracker = () => {
+  type WeightEntry = { date: string; weight: number };
   // Load data from localStorage or use defaults
-  const loadData = (key, defaultValue) => {
+  const loadData = (key: any, defaultValue: any) => {
     try {
       const saved = localStorage.getItem(key);
       return saved ? JSON.parse(saved) : defaultValue;
@@ -14,7 +15,7 @@ const WeightLossTracker = () => {
   };
 
   // Save data to localStorage
-  const saveData = (key, data) => {
+  const saveData = (key: any, data: any) => {
     try {
       localStorage.setItem(key, JSON.stringify(data));
     } catch (error) {
@@ -82,9 +83,9 @@ const WeightLossTracker = () => {
   const targetDate = new Date(profile.targetDate);
   const currentDate = new Date();
   
-  const totalDays = Math.ceil((targetDate - startDate) / (1000 * 60 * 60 * 24));
-  const daysPassed = Math.ceil((currentDate - startDate) / (1000 * 60 * 60 * 24));
-  const daysRemaining = Math.max(0, Math.ceil((targetDate - currentDate) / (1000 * 60 * 60 * 24)));
+  const totalDays = Math.ceil((targetDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const daysPassed = Math.ceil((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
+  const daysRemaining = Math.max(0, Math.ceil((targetDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24)));
   
   const timeProgressPercentage = Math.min((daysPassed / totalDays) * 100, 100);
   const requiredWeightLossRate = totalWeightToLose / totalDays; // kg per day
@@ -95,23 +96,23 @@ const WeightLossTracker = () => {
 
   // Calculate 7-day rolling average
   const last7Days = weightEntries.slice(-7);
-  const rollingAverage = last7Days.reduce((sum, entry) => sum + entry.weight, 0) / last7Days.length;
+  const rollingAverage = last7Days.reduce((sum: any, entry: any) => sum + entry.weight, 0) / last7Days.length;
 
   // Get today's date
   const addWeightEntry = () => {
     if (todayData.weight) {
       const newEntry = { date: today, weight: parseFloat(todayData.weight) };
-      const updatedEntries = [...weightEntries.filter(e => e.date !== today), newEntry].sort((a, b) => new Date(a.date) - new Date(b.date));
+      const updatedEntries = [...weightEntries.filter((e: { date: string; }) => e.date !== today), newEntry].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
       setWeightEntries(updatedEntries);
       setTodayData({ ...todayData, weight: '' });
     }
   };
 
-  const adjustCalories = (amount) => {
+  const adjustCalories = (amount: any) => {
     setTodayData({ ...todayData, caloriesBurned: Math.max(0, todayData.caloriesBurned + amount) });
   };
 
-  const adjustWater = (amount) => {
+  const adjustWater = (amount: any) => {
     setTodayData({ ...todayData, waterGlasses: Math.max(0, todayData.waterGlasses + amount) });
   };
 
@@ -124,7 +125,13 @@ const WeightLossTracker = () => {
     return "🎯 Great start! You're on track! Keep going! 🚀";
   };
 
-  const TabButton = ({ id, label, icon: Icon }) => (
+  type TabButtonProps = {
+    id: string;
+    label: string;
+    icon: React.ElementType;
+  };
+
+  const TabButton = ({ id, label, icon: Icon }: TabButtonProps) => (
     <button
       onClick={() => setActiveTab(id)}
       className={`flex-1 flex flex-col items-center py-3 px-2 ${
@@ -542,7 +549,7 @@ const WeightLossTracker = () => {
           <div className="space-y-4">
             <h2 className="text-lg font-semibold text-gray-800">Weight History</h2>
             <div className="space-y-2">
-              {weightEntries.slice(-10).reverse().map((entry, index) => (
+              {weightEntries.slice(-10).reverse().map((entry: WeightEntry) => (
                 <div key={entry.date} className="flex justify-between items-center p-3 bg-gray-50 rounded-xl">
                   <span className="text-gray-600">{new Date(entry.date).toLocaleDateString()}</span>
                   <span className="font-semibold">{entry.weight} kg</span>
@@ -554,7 +561,7 @@ const WeightLossTracker = () => {
             <div className="bg-gray-50 p-4 rounded-2xl">
               <h3 className="font-medium mb-3">Trend</h3>
               <div className="h-32 flex items-end justify-between gap-1">
-                {weightEntries.slice(-7).map((entry, index) => {
+                {weightEntries.slice(-7).map((entry: WeightEntry) => {
                   const height = ((profile.startWeight - entry.weight) / (profile.startWeight - profile.goalWeight)) * 100;
                   return (
                     <div key={entry.date} className="flex-1 flex flex-col items-center">
@@ -597,10 +604,10 @@ const WeightLossTracker = () => {
                     strokeWidth="3"
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    points={weightEntries.map((entry, index) => {
+                    points={weightEntries.map((entry: WeightEntry, index: number) => {
                       const x = (index / (weightEntries.length - 1)) * 280 + 10;
-                      const minWeight = Math.min(...weightEntries.map(e => e.weight));
-                      const maxWeight = Math.max(...weightEntries.map(e => e.weight));
+                      const minWeight = Math.min(...weightEntries.map((e: WeightEntry) => e.weight));
+                      const maxWeight = Math.max(...weightEntries.map((e: WeightEntry) => e.weight));
                       const weightRange = maxWeight - minWeight || 1;
                       const y = 130 - ((entry.weight - minWeight) / weightRange) * 110;
                       return `${x},${y}`;
@@ -608,10 +615,10 @@ const WeightLossTracker = () => {
                   />
                   
                   {/* Weight points */}
-                  {weightEntries.map((entry, index) => {
+                  {weightEntries.map((entry: WeightEntry, index: number) => {
                     const x = (index / (weightEntries.length - 1)) * 280 + 10;
-                    const minWeight = Math.min(...weightEntries.map(e => e.weight));
-                    const maxWeight = Math.max(...weightEntries.map(e => e.weight));
+                    const minWeight = Math.min(...weightEntries.map((e: WeightEntry) => e.weight));
+                    const maxWeight = Math.max(...weightEntries.map((e: WeightEntry) => e.weight));
                     const weightRange = maxWeight - minWeight || 1;
                     const y = 130 - ((entry.weight - minWeight) / weightRange) * 110;
                     return (
@@ -629,10 +636,10 @@ const WeightLossTracker = () => {
                   
                   {/* Y-axis labels */}
                   <text x="5" y="25" fontSize="10" fill="#6b7280" textAnchor="start">
-                    {Math.max(...weightEntries.map(e => e.weight)).toFixed(1)}
+                    {Math.max(...weightEntries.map((e: WeightEntry) => e.weight)).toFixed(1)}
                   </text>
                   <text x="5" y="135" fontSize="10" fill="#6b7280" textAnchor="start">
-                    {Math.min(...weightEntries.map(e => e.weight)).toFixed(1)}
+                    {Math.min(...weightEntries.map((e: WeightEntry) => e.weight)).toFixed(1)}
                   </text>
                 </svg>
                 
@@ -654,15 +661,15 @@ const WeightLossTracker = () => {
                   
                   {/* Calculate rolling averages for each point */}
                   {(() => {
-                    const rollingAvgs = weightEntries.map((_, index) => {
+                    const rollingAvgs = weightEntries.map((_: WeightEntry, index: number) => {
                       const startIndex = Math.max(0, index - 6);
                       const subset = weightEntries.slice(startIndex, index + 1);
-                      const avg = subset.reduce((sum, entry) => sum + entry.weight, 0) / subset.length;
+                      const avg = subset.reduce((sum: number, entry: WeightEntry) => sum + entry.weight, 0) / subset.length;
                       return { date: weightEntries[index].date, avg };
                     });
 
-                    const minAvg = Math.min(...rollingAvgs.map(r => r.avg));
-                    const maxAvg = Math.max(...rollingAvgs.map(r => r.avg));
+                    const minAvg = Math.min(...rollingAvgs.map((r: { avg: number }) => r.avg));
+                    const maxAvg = Math.max(...rollingAvgs.map((r: { avg: number }) => r.avg));
                     const avgRange = maxAvg - minAvg || 1;
 
                     return (
@@ -674,7 +681,7 @@ const WeightLossTracker = () => {
                           strokeWidth="3"
                           strokeLinecap="round"
                           strokeLinejoin="round"
-                          points={rollingAvgs.map((item, index) => {
+                          points={rollingAvgs.map((item: { avg: number; date: string }, index: number) => {
                             const x = (index / (rollingAvgs.length - 1)) * 280 + 10;
                             const y = 130 - ((item.avg - minAvg) / avgRange) * 110;
                             return `${x},${y}`;
@@ -682,7 +689,7 @@ const WeightLossTracker = () => {
                         />
                         
                         {/* Rolling average points */}
-                        {rollingAvgs.map((item, index) => {
+                        {rollingAvgs.map((item: { avg: number; date: string }, index: number) => {
                           const x = (index / (rollingAvgs.length - 1)) * 280 + 10;
                           const y = 130 - ((item.avg - minAvg) / avgRange) * 110;
                           return (
@@ -726,14 +733,14 @@ const WeightLossTracker = () => {
                   <rect width="100%" height="100%" fill="url(#grid)" />
                   
                   {(() => {
-                    const rollingAvgs = weightEntries.map((_, index) => {
+                    const rollingAvgs = weightEntries.map((_: WeightEntry, index: number) => {
                       const startIndex = Math.max(0, index - 6);
                       const subset = weightEntries.slice(startIndex, index + 1);
-                      const avg = subset.reduce((sum, entry) => sum + entry.weight, 0) / subset.length;
+                      const avg = subset.reduce((sum: number, entry: WeightEntry) => sum + entry.weight, 0) / subset.length;
                       return avg;
                     });
 
-                    const allValues = [...weightEntries.map(e => e.weight), ...rollingAvgs];
+                    const allValues = [...weightEntries.map((e: { weight: any; }) => e.weight), ...rollingAvgs];
                     const minValue = Math.min(...allValues);
                     const maxValue = Math.max(...allValues);
                     const valueRange = maxValue - minValue || 1;
@@ -746,7 +753,7 @@ const WeightLossTracker = () => {
                           stroke="#3b82f6"
                           strokeWidth="2"
                           strokeDasharray="5,5"
-                          points={weightEntries.map((entry, index) => {
+                          points={weightEntries.map((entry: { weight: number; }, index: number) => {
                             const x = (index / (weightEntries.length - 1)) * 280 + 10;
                             const y = 130 - ((entry.weight - minValue) / valueRange) * 110;
                             return `${x},${y}`;
@@ -758,7 +765,7 @@ const WeightLossTracker = () => {
                           fill="none"
                           stroke="#8b5cf6"
                           strokeWidth="3"
-                          points={rollingAvgs.map((avg, index) => {
+                          points={rollingAvgs.map((avg: number, index: number) => {
                             const x = (index / (rollingAvgs.length - 1)) * 280 + 10;
                             const y = 130 - ((avg - minValue) / valueRange) * 110;
                             return `${x},${y}`;
@@ -802,7 +809,7 @@ const WeightLossTracker = () => {
               <div className="bg-green-50 p-4 rounded-2xl text-center">
                 <h4 className="font-medium text-green-800">Best Day</h4>
                 <p className="text-lg font-bold text-green-600">
-                  {Math.min(...weightEntries.map(e => e.weight)).toFixed(1)} kg
+                  {Math.min(...weightEntries.map((e: { weight: any; }) => e.weight)).toFixed(1)} kg
                 </p>
               </div>
               <div className="bg-blue-50 p-4 rounded-2xl text-center">
@@ -933,16 +940,22 @@ const WeightLossTracker = () => {
                       input.type = 'file';
                       input.accept = '.json';
                       input.onchange = (e) => {
-                        const file = e.target.files[0];
+                        const inputEl = e.target as HTMLInputElement;
+                        const file = inputEl.files && inputEl.files[0];
                         if (file) {
                           const reader = new FileReader();
                           reader.onload = (event) => {
                             try {
-                              const data = JSON.parse(event.target.result);
-                              if (data.profile) setProfile(data.profile);
-                              if (data.weightEntries) setWeightEntries(data.weightEntries);
-                              if (data.dailyData) setTodayData(data.dailyData);
-                              alert('Data imported successfully!');
+                              const result = event.target && event.target.result;
+                              if (typeof result === 'string') {
+                                const data = JSON.parse(result);
+                                if (data.profile) setProfile(data.profile);
+                                if (data.weightEntries) setWeightEntries(data.weightEntries);
+                                if (data.dailyData) setTodayData(data.dailyData);
+                                alert('Data imported successfully!');
+                              } else {
+                                alert('Error importing data. File could not be read as text.');
+                              }
                             } catch (error) {
                               alert('Error importing data. Please check the file format.');
                             }
