@@ -269,12 +269,12 @@ const WeightLossTracker = () => {
                 <div className="bg-blue-50 p-3 rounded-xl text-center">
                   <Droplets className="w-5 h-5 text-blue-600 mx-auto mb-1" />
                   <div className="text-sm text-blue-600">Water</div>
-                  <div className="font-bold text-blue-800">{todayData.waterGlasses}/8</div>
+                  <div className="font-bold text-blue-800">{todayData.waterGlasses}/{profile.dailyWaterGoal}</div>
                 </div>
               </div>
 
               {/* Progress Bars */}
-              <div className="space-y-3">
+              <div className="space-y-3"  style={{marginBottom:'100px'}}>
                 <div className="bg-gray-50 p-3 rounded-xl">
                   <div className="flex justify-between text-sm mb-2">
                     <span>Calories Burned</span>
@@ -327,7 +327,7 @@ const WeightLossTracker = () => {
                   />
                   <button
                     onClick={addWeightEntry}
-                    className="bg-purple-500 text-white px-6 py-4 rounded-xl hover:bg-purple-600 transition-colors font-medium"
+                    className="bg-purple-500 text-black px-4 py-3 rounded-xl hover:bg-purple-600 transition-colors font-small"
                   >
                     Log Weight
                   </button>
@@ -339,7 +339,7 @@ const WeightLossTracker = () => {
             </div>
 
             {/* Calorie Burn Entry */}
-            <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-2xl" style={{marginBottom:'100px'}}>
+            <div className="bg-gradient-to-r from-orange-50 to-red-50 p-6 rounded-2xl">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Calories Burned</h3>
                 <div className="text-right">
@@ -376,7 +376,7 @@ const WeightLossTracker = () => {
                         });
                       }
                     }}
-                    className="bg-orange-500 text-white px-6 py-4 rounded-xl hover:bg-orange-600 transition-colors font-medium"
+                    className="bg-orange-500 text-black px-6 py-4 rounded-xl hover:bg-orange-600 transition-colors font-medium"
                   >
                     Add
                   </button>
@@ -448,7 +448,7 @@ const WeightLossTracker = () => {
             </div>
 
             {/* Water Entry */}
-            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-2xl">
+            <div className="bg-gradient-to-r from-blue-50 to-cyan-50 p-6 rounded-2xl" style={{marginBottom:'100px'}}>
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-medium text-gray-800">Water Intake</h3>
                 <div className="text-right">
@@ -485,7 +485,7 @@ const WeightLossTracker = () => {
                         });
                       }
                     }}
-                    className="bg-blue-500 text-white px-6 py-4 rounded-xl hover:bg-blue-600 transition-colors font-medium"
+                    className="bg-blue-500 text-black px-6 py-4 rounded-xl hover:bg-blue-600 transition-colors font-medium"
                   >
                     Add
                   </button>
@@ -521,7 +521,7 @@ const WeightLossTracker = () => {
                       <div
                         key={i}
                         className={`h-10 rounded-lg transition-all duration-300 ${
-                          i < todayData.waterGlasses 
+                          i < (todayData.waterGlasses * 8 )/ profile.dailyWaterGoal
                             ? 'bg-gradient-to-t from-blue-400 to-blue-300 shadow-sm' 
                             : 'bg-gray-200 hover:bg-gray-300 cursor-pointer'
                         }`}
@@ -532,25 +532,6 @@ const WeightLossTracker = () => {
                   <div className="text-xs text-gray-500 mt-2 text-center">
                     Tap a glass to set your water level
                   </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Daily Summary */}
-            <div className="bg-gradient-to-r from-gray-50 to-slate-50 p-6 rounded-2xl">
-              <h3 className="text-lg font-medium text-gray-800 mb-4">Today's Summary</h3>
-              <div className="grid grid-cols-3 gap-4">
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-purple-600">{currentWeight.toFixed(1)} kg</div>
-                  <div className="text-sm text-gray-600">Current Weight</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-orange-600">{todayData.caloriesBurned}</div>
-                  <div className="text-sm text-gray-600">Calories Burned</div>
-                </div>
-                <div className="text-center">
-                  <div className="text-2xl font-bold text-blue-600">{todayData.waterGlasses}/8</div>
-                  <div className="text-sm text-gray-600">Water</div>
                 </div>
               </div>
             </div>
@@ -817,7 +798,7 @@ const WeightLossTracker = () => {
             </div>
 
             {/* Stats Summary */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4" style={{marginBottom:'100px'}}>
               <div className="bg-green-50 p-4 rounded-2xl text-center">
                 <h4 className="font-medium text-green-800">Best Day</h4>
                 <p className="text-lg font-bold text-green-600">
@@ -908,7 +889,7 @@ const WeightLossTracker = () => {
             </div>
 
             {/* Data Management */}
-            <div className="bg-blue-50 p-4 rounded-2xl">
+            <div className="bg-blue-50 p-4 rounded-2xl" style={{marginBottom:'100px'}}>
               <h3 className="font-medium text-blue-800 mb-3">📊 Data Management</h3>
               <div className="space-y-3">
                 <div className="bg-white p-3 rounded-xl">
