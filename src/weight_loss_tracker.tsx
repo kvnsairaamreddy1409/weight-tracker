@@ -36,15 +36,7 @@ const WeightLossTracker = () => {
 
   // Daily tracking data - loaded from localStorage
   const [weightEntries, setWeightEntries] = useState(() => 
-    loadData('weightEntries', [
-      { date: '2025-08-25', weight: 82 },
-      { date: '2025-08-26', weight: 81.7 },
-      { date: '2025-08-27', weight: 81.9 },
-      { date: '2025-08-28', weight: 81.5 },
-      { date: '2025-08-29', weight: 81.2 },
-      { date: '2025-08-30', weight: 80.9 },
-      { date: '2025-08-31', weight: 80.6 }
-    ])
+    loadData('weightEntries', [])
   );
 
   // Today's data - loaded from localStorage with today's date as key
