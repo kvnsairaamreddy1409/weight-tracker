@@ -2,6 +2,15 @@ import { useState, useEffect } from 'react';
 import { Scale, Target, Droplets, TrendingDown, Calendar, BarChart3, Settings, PlusCircle } from 'lucide-react';
 
 const WeightLossTracker = () => {
+  // Dark mode toggle
+  const [isDark, setIsDark] = useState(false);
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDark]);
   type WeightEntry = { date: string; weight: number };
   // Load data from localStorage or use defaults
   const loadData = (key: any, defaultValue: any) => {
@@ -136,15 +145,15 @@ const WeightLossTracker = () => {
   );
 
   return (
-    <div className="max-w-sm mx-auto bg-white min-h-screen">
+  <div className="max-w-sm mx-auto bg-white dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white p-6 rounded-b-3xl">
+  <div className="bg-gradient-to-r from-blue-500 to-purple-600 text-white dark:bg-gradient-to-r dark:from-gray-800 dark:to-gray-900 p-6 rounded-b-3xl">
         <h1 className="text-2xl font-bold">My Journey</h1>
         <p className="opacity-90">{getMotivationalMessage()}</p>
       </div>
 
       {/* Content */}
-      <div className="p-4">
+  <div className="p-4 text-gray-800 dark:text-gray-500">
         {activeTab === 'dashboard' && (
           <div className="space-y-6">
             {/* Progress Overview */}
@@ -326,7 +335,7 @@ const WeightLossTracker = () => {
                   />
                   <button
                     onClick={addWeightEntry}
-                    className="bg-purple-500 text-black px-4 py-3 rounded-xl hover:bg-purple-600 transition-colors font-small"
+                    className="bg-purple-500 text-white px-4 py-3 rounded-xl hover:bg-purple-600 transition-colors font-small"
                   >
                     Log Weight
                   </button>
@@ -375,7 +384,7 @@ const WeightLossTracker = () => {
                         });
                       }
                     }}
-                    className="bg-orange-500 text-black px-6 py-4 rounded-xl hover:bg-orange-600 transition-colors font-medium"
+                    className="bg-orange-500 text-white px-6 py-4 rounded-xl hover:bg-orange-600 transition-colors font-medium"
                   >
                     Add
                   </button>
@@ -484,7 +493,7 @@ const WeightLossTracker = () => {
                         });
                       }
                     }}
-                    className="bg-blue-500 text-black px-6 py-4 rounded-xl hover:bg-blue-600 transition-colors font-medium"
+                    className="bg-blue-500 text-white px-6 py-4 rounded-xl hover:bg-blue-600 transition-colors font-medium"
                   >
                     Add
                   </button>
@@ -982,12 +991,20 @@ const WeightLossTracker = () => {
                 </button>
               </div>
             </div>
+                  <div className="flex justify-end mb-2">
+          <button
+            onClick={() => setIsDark(!isDark)}
+            className="px-3 py-1 rounded bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 text-xs font-medium shadow hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+          >
+            {isDark ? '🌙 Dark' : '☀️ Light'} Mode
+          </button>
+        </div>
           </div>
         )}
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm bg-white border-t border-gray-200">
+  <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-sm bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="flex">
           <TabButton id="dashboard" label="Home" icon={Target} />
           <TabButton id="add" label="Add" icon={PlusCircle} />
